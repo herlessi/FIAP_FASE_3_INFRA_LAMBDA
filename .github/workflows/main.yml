@@ -50,15 +50,15 @@ jobs:
         working-directory: .
         run: terraform init -input=false
 
-      # # 🔍 7. Valida a configuração
-      # - name: Terraform Validate
-      #   working-directory: terraform
-      #   run: terraform validate
+      # 🔍 7. Valida a configuração
+      - name: Terraform Validate
+        working-directory: .
+        run: terraform validate
 
-      # # 🧠 8. Planeja as mudanças
-      # - name: Terraform Plan
-      #   working-directory: terraform
-      #   run: terraform plan -out=tfplan -input=false
+      # 🧠 8. Planeja as mudanças
+      - name: Terraform Plan
+        working-directory: .
+        run: terraform plan -out=tfplan -input=false
 
       # 🚀 9. Aplica as mudanças (deploy)
       - name: Terraform Apply
