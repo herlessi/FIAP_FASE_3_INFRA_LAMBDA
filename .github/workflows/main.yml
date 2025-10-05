@@ -1,0 +1,66 @@
+name: Deploy AWS Lambda via Terraform
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Terraform Deploy
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write  # 🔐 necessário para autenticação OIDC com AWS
+
+    steps:
+      # 🧾 1. Clona o repositório
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 🧰 2. Instala o Terraform v1.9.6
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.6
+
+      # 🔑 3. Configura credenciais AWS via OIDC (sem expor chaves)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/github-terraform-deploy
+          role-to-assume: arn:aws:iam::243645409029:role/GitHubActionsTerraformRole
+          aws-region: us-east-1
+
+      # 📦 4. Instala dependências do Node (para a Lambda)
+      - name: Install Node dependencies
+        working-directory: terraform/src
+        run: npm ci --omit=dev
+
+      # 🧳 5. Gera o ZIP da função Lambda
+      # - name: Package Lambda code
+      #   run: |
+      #     cd terraform
+      #     zip -r lambda.zip src
+
+      # 🧩 6. Inicializa o Terraform
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init -input=false
+
+      # # 🔍 7. Valida a configuração
+      # - name: Terraform Validate
+      #   working-directory: terraform
+      #   run: terraform validate
+
+      # # 🧠 8. Planeja as mudanças
+      # - name: Terraform Plan
+      #   working-directory: terraform
+      #   run: terraform plan -out=tfplan -input=false
+
+      # 🚀 9. Aplica as mudanças (deploy)
+      - name: Terraform Apply
+        working-directory: terraform
+        run: terraform apply -auto-approve -input=false tfplan
