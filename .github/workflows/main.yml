@@ -36,7 +36,7 @@ jobs:
 
       # 📦 4. Instala dependências do Node (para a Lambda)
       - name: Install Node dependencies
-        working-directory: terraform/src
+        working-directory: src
         run: npm ci --omit=dev
 
       # 🧳 5. Gera o ZIP da função Lambda
