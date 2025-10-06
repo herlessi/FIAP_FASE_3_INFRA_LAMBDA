@@ -34,7 +34,7 @@ export const handler = async (event) => {
       const client = new Client(conObj);
       await client.connect();
 
-      // console.log('teste 22')
+      // console.log('teste 222222')
       const res = await client.query('SELECT * FROM customer WHERE cpf = $1', [cpf]);
 
       
