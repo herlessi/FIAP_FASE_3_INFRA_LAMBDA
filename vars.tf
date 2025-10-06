@@ -15,7 +15,7 @@ variable "JWT_SECRET" {
 }
 
 variable "nome_credencial_secrets" {
-  default = "rds-db-credentials4"
+  default = "rds-db-credentials7"
 }
 
 variable "nome_instancia_rds" {
